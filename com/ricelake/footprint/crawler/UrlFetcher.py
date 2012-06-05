@@ -3,6 +3,7 @@ import sys
 from cgi import escape
 import urlparse
 from BeautifulSoup import BeautifulSoup
+import UrlDbHelper
 
 __version__ = "1.0"
 
@@ -66,10 +67,11 @@ def fetch_all_links(url):
                         
                         
 def main():
-    url1 = fetch_all_links("http://translate.google.com.hk/?hl=zh-TW&amp;tab=wT")
-    url2 = fetch_all_links("http://www.dianping.com")
-    for url in (url1 + url2):
-        print url
+    UrlDbHelper.initDB()
+#    url1 = fetch_all_links("http://translate.google.com.hk/?hl=zh-TW&amp;tab=wT")
+#    url2 = fetch_all_links("http://www.dianping.com")
+#    for url in (url1 + url2):
+#        print url
     
     
 if __name__ == "__main__":

@@ -23,11 +23,21 @@ def initDB():
     conn.commit()
     
 def addToCheckedTable(url):
-    cur.execute("INSERT INTO " + CHECKED_TABLE_NAME + " VALUES (\'" + escape(url) + "\')")
+    if not inCheckedTable(url):
+        cur.execute("INSERT INTO " + CHECKED_TABLE_NAME + " VALUES (\'" + escape(url) + "\')")
     
     
 def addToUncheckedTable(url):
-    cur.execute("INSERT INTO " + UNCHECKED_TABLE_NAME + " VALUES (\'" + escape(url) + "\')")
+    if not inUnCheckedTable(url):
+        cur.execute("INSERT INTO " + UNCHECKED_TABLE_NAME + " VALUES (\'" + escape(url) + "\')")
+        
+def deleteFromCheckedTable(url):
+    t = (escape(url),)
+    cur.execute("DELETE  FROM " + CHECKED_TABLE_NAME + " WHERE id=?", t)
+
+def deleteFromUnheckedTable(url):
+    t = (escape(url),)
+    cur.execute("DELETE  FROM " + UNCHECKED_TABLE_NAME + " WHERE id=?", t)
 
 def commit():
     conn.commit()
@@ -44,8 +54,11 @@ def inUnCheckedTable(url):
 
 def showCheckedTable():
     result = cur.execute("select * from " + CHECKED_TABLE_NAME)
+    count = 0
     for row in result:
+        count += 1
         print row
+    print "totally " + str(count) + " tuples"
         
 def showUnCheckedTable():
     result = cur.execute("select * from " + UNCHECKED_TABLE_NAME)
@@ -57,22 +70,22 @@ def main():
     sina = "www.sina.com.cn"
     google = "www.google.com"
     dianping = "www.dianping.com"
+    print "before add"
     showCheckedTable()
-    print inCheckedTable(sina)
-    addToCheckedTable(sina)
-    print inCheckedTable(sina)
-    showCheckedTable()
-#    conn.commit()
-#    addToCheckedTable(dianping)
-#    addToCheckedTable(google)
-#    addToUncheckedTable([sina])
-#    addToUncheckedTable([sina])
     
-#    print "checked"
-#    showCheckedTable()
-#    print "unchecked"
-#    showUnCheckedTable()
-        
+    print "after add"
+    addToCheckedTable(sina)
+    addToCheckedTable(sina)
+    addToCheckedTable(sina)
+    addToCheckedTable(google)
+    showCheckedTable()
+    
+    print "after delete"
+    deleteFromCheckedTable(sina)
+    showCheckedTable()
+    
+    commit()
+    
     
 if __name__ == "__main__":
     main()
